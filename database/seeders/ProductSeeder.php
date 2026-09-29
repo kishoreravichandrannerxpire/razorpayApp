@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Product;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ProductSeeder extends Seeder
 {
@@ -27,6 +28,11 @@ class ProductSeeder extends Seeder
 
         foreach ($products as $product) {
             Product::updateOrCreate(['id' => $product['id']], $product);
+        }
+
+        // Postgres la id manual ah kodutha, auto-increment sequence ah sync pannanum
+        if (DB::getDriverName() === 'pgsql') {
+            DB::statement("SELECT setval(pg_get_serial_sequence('products', 'id'), (SELECT MAX(id) FROM products))");
         }
     }
 }
