@@ -90,25 +90,36 @@ class PaymentController extends Controller
         return redirect()->route('cart.index')->with('error', $e->getMessage());
     }
 
-    // Clear cart & coupon from session
+    // Create the Razorpay order BEFORE clearing the cart.
+    // If this fails, release the stock/coupon we reserved and keep the cart intact.
+    try {
+        $api = new Api(
+            config('services.razorpay.key'),
+            config('services.razorpay.secret')
+        );
+
+        $razorpayOrder = $api->order->create([
+            'receipt' => 'ORD_' . $order->id,
+            'amount' => (int) round($order->total_amount * 100),
+            'currency' => 'INR',
+        ]);
+
+        $order->update([
+            'razorpay_order_id' => $razorpayOrder['id'],
+        ]);
+    } catch (\Throwable $e) {
+        report($e);
+
+        $order->markFailedAndRestoreStock();
+
+        return redirect()->route('cart.index')
+            ->with('error', 'We could not start the payment right now. Your cart is safe, please try again in a moment.');
+    }
+
+    // Payment order created successfully, now it is safe to clear the cart & coupon
     session()->forget('cart');
     session()->forget('coupon');
     \App\Models\Cart::where('user_id', auth()->id())->delete();
-
-    $api = new Api(
-        config('services.razorpay.key'),
-        config('services.razorpay.secret')
-    );
-
-    $razorpayOrder = $api->order->create([
-        'receipt' => 'ORD_' . $order->id,
-        'amount' => (int) round($order->total_amount * 100),
-        'currency' => 'INR',
-    ]);
-
-    $order->update([
-        'razorpay_order_id' => $razorpayOrder['id']
-    ]);
 
     $order->load('orderItems.product', 'user');
 

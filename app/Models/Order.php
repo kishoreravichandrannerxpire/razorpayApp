@@ -58,6 +58,13 @@ class Order extends Model
         foreach ($this->orderItems as $item) {
             Product::whereKey($item->product_id)->lockForUpdate()->increment('stock', $item->quantity);
         }
+        // Give the coupon use back, since this order will not complete
+        if ($this->coupon_code) {
+            Coupon::where('code', $this->coupon_code)
+                ->where('used_count', '>', 0)
+                ->decrement('used_count');
+        }
+
         $this->update(['status' => 'Failed']);
     });
 }
