@@ -41,6 +41,23 @@
                         @enderror
                     </div>
 
+                    <div class="mb-3">
+                        <label for="image_url" class="form-label fw-semibold">Product Image URL <span class="text-muted small">(optional)</span></label>
+                        <input type="url" id="image_url" name="image_url"
+                               class="form-control @error('image_url') is-invalid @enderror"
+                               value="{{ old('image_url') }}"
+                               placeholder="https://example.com/product-image.jpg">
+                        @error('image_url')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        @if(old('image_url'))
+                            <div class="mt-2">
+                                <img src="{{ old('image_url') }}" alt="Preview" class="img-thumbnail" style="max-height:120px;">
+                            </div>
+                        @endif
+                        <small class="text-muted">Paste a direct link to the product image (JPEG, PNG, WebP, etc.).</small>
+                    </div>
+
                     <div class="row g-3 mb-3">
                         <div class="col-sm-6">
                             <label for="price" class="form-label fw-semibold">Price (₹) <span class="text-danger">*</span></label>

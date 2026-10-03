@@ -6,7 +6,7 @@
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
     <div>
         <h2 class="h3 fw-bold mb-1">Shopping Cart</h2>
-        <p class="text-muted mb-0">Review your selected items before proceeding to checkout</p>
+        <p class="text-muted mb-0">Review your selected items and apply promo coupons before checkout</p>
     </div>
     <div>
         <a href="{{ route('products.index') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
@@ -19,7 +19,7 @@
     <div class="row g-4">
         <!-- Cart Items List (Col 8) -->
         <div class="col-lg-8">
-            <div class="card shadow-sm border-0">
+            <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
@@ -46,7 +46,12 @@
                                                     </svg>
                                                 </div>
                                                 <div>
-                                                    <h6 class="fw-bold mb-0 text-dark">{{ $item['name'] }}</h6>
+                                                    <h6 class="fw-bold mb-0 text-dark">
+                                                        {{ $item['name'] }}
+                                                        @if(!empty($item['discount_percentage']) && $item['discount_percentage'] > 0)
+                                                            <span class="badge bg-danger ms-1" style="font-size: 0.7rem;">{{ $item['discount_percentage'] }}% OFF</span>
+                                                        @endif
+                                                    </h6>
                                                     @if(!empty($item['description']))
                                                         <small class="text-muted d-block" style="max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                                             {{ $item['description'] }}
@@ -58,10 +63,17 @@
 
                                         <!-- Unit Price -->
                                         <td class="text-center fw-semibold text-secondary">
-                                            ₹{{ number_format($item['price'], 2) }}
+                                            @if(!empty($item['discount_percentage']) && $item['discount_percentage'] > 0)
+                                                <div>
+                                                    <span class="fw-bold text-dark">₹{{ number_format($item['price'], 2) }}</span>
+                                                    <small class="text-muted text-decoration-line-through d-block" style="font-size: 0.75rem;">₹{{ number_format($item['original_price'], 2) }}</small>
+                                                </div>
+                                            @else
+                                                ₹{{ number_format($item['price'], 2) }}
+                                            @endif
                                         </td>
 
-                                        <!-- Quantity Update Form (Pure HTML - No JS) -->
+                                        <!-- Quantity Update Form -->
                                         <td class="text-center">
                                             @php
                                                 $prodModel = \App\Models\Product::find($id);
@@ -98,7 +110,7 @@
                                             ₹{{ number_format($item['price'] * $item['quantity'], 2) }}
                                         </td>
 
-                                        <!-- Remove Item Form (Pure HTML - No JS) -->
+                                        <!-- Remove Item Form -->
                                         <td class="pe-4 text-center">
                                             <form action="{{ route('cart.remove', $id) }}" method="POST" class="d-inline">
                                                 @csrf
@@ -128,6 +140,44 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Available Coupons Banner Card -->
+            @if(isset($availableCoupons) && count($availableCoupons) > 0)
+                <div class="card border-0 bg-light shadow-sm p-3">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="fs-5">🎟️</span>
+                        <h6 class="fw-bold mb-0 text-dark">Available Offers & Coupons</h6>
+                    </div>
+                    <div class="row g-2">
+                        @foreach($availableCoupons as $c)
+                            <div class="col-md-6">
+                                <div class="p-2 border rounded bg-white d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-primary-subtle text-primary fw-bold font-monospace me-1">{{ $c->code }}</span>
+                                        <small class="text-muted d-block" style="font-size: 0.78rem;">
+                                            @if($c->type === 'percent')
+                                                {{ $c->value }}% OFF @if($c->max_discount_amount)(Max ₹{{ $c->max_discount_amount }})@endif
+                                            @else
+                                                Flat ₹{{ number_format($c->value, 0) }} OFF
+                                            @endif
+                                            @if($c->min_cart_amount)
+                                                (Min ₹{{ number_format($c->min_cart_amount, 0) }})
+                                            @endif
+                                        </small>
+                                    </div>
+                                    <form action="{{ route('cart.coupon.apply') }}" method="POST" class="m-0">
+                                        @csrf
+                                        <input type="hidden" name="coupon_code" value="{{ $c->code }}">
+                                        <button type="submit" class="btn btn-outline-primary btn-sm py-1 px-2" style="font-size: 0.75rem;">
+                                            Apply
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
 
         <!-- Order Summary & Checkout Action (Col 4) -->
@@ -143,9 +193,49 @@
                     </div>
 
                     <div class="d-flex justify-content-between mb-2 text-muted">
-                        <span>Items Subtotal</span>
-                        <span class="fw-semibold text-dark">₹{{ number_format($total, 2) }}</span>
+                        <span>Subtotal</span>
+                        <span class="fw-semibold text-dark">₹{{ number_format($subtotal, 2) }}</span>
                     </div>
+
+                    <!-- Coupon Section inside Summary -->
+                    <div class="my-3 py-3 border-top border-bottom">
+                        <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.85rem;">Have a Promo Code / Coupon?</label>
+                        @if(session('coupon'))
+                            <div class="d-flex justify-content-between align-items-center p-2 bg-success-subtle text-success rounded border border-success-subtle mb-2">
+                                <div>
+                                    <span class="fw-bold font-monospace">🎟️ {{ session('coupon.code') }}</span>
+                                    <small class="d-block" style="font-size: 0.75rem;">Applied Discount: -₹{{ number_format($discountAmount, 2) }}</small>
+                                </div>
+                                <form action="{{ route('cart.coupon.remove') }}" method="POST" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2" style="font-size: 0.75rem;" title="Remove Coupon">
+                                        Remove
+                                    </button>
+                                </form>
+                            </div>
+                        @else
+                            <form action="{{ route('cart.coupon.apply') }}" method="POST" class="d-flex gap-2">
+                                @csrf
+                                <input 
+                                    type="text" 
+                                    name="coupon_code" 
+                                    class="form-control form-control-sm text-uppercase font-monospace" 
+                                    placeholder="Enter Code (e.g. WELCOME20)"
+                                    required
+                                >
+                                <button type="submit" class="btn btn-dark btn-sm px-3 fw-bold">
+                                    Apply
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+
+                    @if($discountAmount > 0)
+                        <div class="d-flex justify-content-between mb-2 text-success fw-semibold">
+                            <span>Coupon Discount</span>
+                            <span>- ₹{{ number_format($discountAmount, 2) }}</span>
+                        </div>
+                    @endif
 
                     <div class="d-flex justify-content-between mb-3 text-muted">
                         <span>Shipping & Delivery</span>
@@ -159,7 +249,7 @@
                         <span class="h4 fw-bold text-success mb-0">₹{{ number_format($total, 2) }}</span>
                     </div>
 
-                    <!-- Pure HTML Form to trigger Payment Checkout (Strictly No JS) -->
+                    <!-- Payment Checkout Form -->
                     <form action="{{ route('payment.create') }}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-primary w-100 py-3 fw-bold fs-6 d-flex align-items-center justify-content-center gap-2 shadow-sm">

@@ -24,7 +24,9 @@ class PaymentController extends Controller
     }
 
     try {
-        $order = \Illuminate\Support\Facades\DB::transaction(function () use ($cart) {
+        $couponSession = session()->get('coupon');
+
+        $order = \Illuminate\Support\Facades\DB::transaction(function () use ($cart, $couponSession) {
 
             $order = Order::create([
                 'user_id' => auth()->id(),
@@ -34,34 +36,53 @@ class PaymentController extends Controller
                 'status' => 'Pending',
             ]);
 
-            $total = 0;
+            $subtotal = 0;
 
             foreach ($cart as $item) {
-                // Row-ஐ lock pannுவோம் — same product-ku வேற யாராவது
-                // same நேரத்தில் checkout pannா, avanga wait pannுவாnga.
                 $product = Product::whereKey($item['id'])->lockForUpdate()->first();
 
                 if (! $product || ! $product->hasEnoughStock($item['quantity'])) {
                     throw new \RuntimeException("'{$item['name']}' no longer has enough stock.");
                 }
 
-                $subtotal = $product->price * $item['quantity'];
+                $itemPrice = $product->finalPrice();
+                $itemSubtotal = $itemPrice * $item['quantity'];
 
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $product->id,
                     'quantity' => $item['quantity'],
-                    'price' => $product->price,
-                    'subtotal' => $subtotal,
+                    'price' => $itemPrice,
+                    'subtotal' => $itemSubtotal,
                 ]);
 
-                // Ippodhان் stock decrement aagும் — checkout time-la mattum.
                 $product->decrement('stock', $item['quantity']);
 
-                $total += $subtotal;
+                $subtotal += $itemSubtotal;
             }
 
-            $order->update(['total_amount' => $total]);
+            $discountAmount = 0;
+            $couponCode = null;
+
+            if ($couponSession) {
+                $coupon = \App\Models\Coupon::where('code', $couponSession['code'])->first();
+                if ($coupon) {
+                    $validation = $coupon->isValidForCart($subtotal);
+                    if ($validation['valid']) {
+                        $discountAmount = $coupon->calculateDiscount($subtotal);
+                        $couponCode = $coupon->code;
+                        $coupon->increment('used_count');
+                    }
+                }
+            }
+
+            $finalTotal = max(0, $subtotal - $discountAmount);
+
+            $order->update([
+                'total_amount' => $finalTotal,
+                'coupon_code' => $couponCode,
+                'discount_amount' => $discountAmount,
+            ]);
 
             return $order;
         });
@@ -69,8 +90,9 @@ class PaymentController extends Controller
         return redirect()->route('cart.index')->with('error', $e->getMessage());
     }
 
-    // Order safely create aana apparam mattum cart clear pannunga.
+    // Clear cart & coupon from session
     session()->forget('cart');
+    session()->forget('coupon');
     \App\Models\Cart::where('user_id', auth()->id())->delete();
 
     $api = new Api(

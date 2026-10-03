@@ -22,6 +22,7 @@
                 <thead class="table-light">
                     <tr>
                         <th>#</th>
+                        <th>Image</th>
                         <th>Name</th>
                         <th>Price</th>
                         <th>Stock</th>
@@ -34,6 +35,14 @@
                     @forelse($products as $product)
                     <tr>
                         <td class="text-muted" style="font-size:0.85rem;">{{ $product->id }}</td>
+                        <td>
+                            <img
+                                src="{{ $product->displayImage() }}"
+                                alt="{{ $product->product_name }}"
+                                style="width:52px; height:40px; object-fit:cover; border-radius:8px; border:1px solid #e2e8f0;"
+                                loading="lazy"
+                            >
+                        </td>
                         <td class="fw-semibold">{{ $product->product_name }}</td>
                         <td>₹{{ number_format($product->price, 2) }}</td>
                         <td>
@@ -73,7 +82,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-4">No products found.</td>
+                        <td colspan="8" class="text-center text-muted py-4">No products found.</td>
                     </tr>
                     @endforelse
                 </tbody>

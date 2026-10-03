@@ -4,210 +4,385 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Razorpay Store')</title>
+    <meta name="description" content="Shop premium tech products and pay instantly with Razorpay.">
 
-    <!-- Bootstrap 5 CSS (Strictly CSS only - No JavaScript) -->
+    {{-- Bootstrap 5 CSS --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom CSS styling for aesthetic look and feel -->
     <style>
+        /* ── Base / Typography ─────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; }
+
         body {
-            background-color: #f4f6f9;
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            background: #f1f5f9;
+            color: #1e293b;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .navbar-brand {
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: #0f172a;
+        }
+
+        /* ── Navbar ────────────────────────────────────────── */
+        .app-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.75rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+        }
+
+        .app-nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #1e293b;
+            letter-spacing: -0.3px;
+        }
+        .nav-brand:hover { color: #3b82f6; }
+        .nav-brand-icon {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .nav-link-item {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #64748b;
+            text-decoration: none;
+            padding: 0.45rem 0.85rem;
+            border-radius: 8px;
+            transition: background 0.18s, color 0.18s;
+        }
+        .nav-link-item:hover,
+        .nav-link-item.active { color: #3b82f6; background: #eff6ff; }
+
+        .nav-cart-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            color: #374151;
+            font-size: 0.85rem;
             font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #0d6efd !important;
+            padding: 0.48rem 1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            position: relative;
+            transition: all 0.18s;
+        }
+        .nav-cart-btn:hover { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+
+        .nav-cart-dot {
+            position: absolute;
+            top: -5px; right: -5px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fff;
         }
 
-        .navbar {
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        .nav-user-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #374151;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.42rem 0.9rem;
+            border-radius: 8px;
         }
 
+        .nav-logout-btn {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #ef4444;
+            background: transparent;
+            border: 1.5px solid #fca5a5;
+            padding: 0.42rem 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.18s;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        .nav-logout-btn:hover { background: #fef2f2; border-color: #ef4444; }
+
+        .nav-login-btn {
+            font-size: 0.85rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: #fff;
+            border: none;
+            padding: 0.48rem 1.2rem;
+            border-radius: 9px;
+            text-decoration: none;
+            transition: opacity 0.18s, transform 0.18s;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+        }
+        .nav-login-btn:hover { opacity:0.9; transform:translateY(-1px); color:#fff; }
+
+        /* ── Main Content ──────────────────────────────────── */
         .main-content {
             flex: 1;
             padding-top: 2rem;
-            padding-bottom: 3rem;
+            padding-bottom: 3.5rem;
         }
 
-        .card {
-            border: 1px solid #e9ecef;
+        /* ── Alerts ────────────────────────────────────────── */
+        .alert {
+            border: none;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-        }
-
-        .auth-card {
-            max-width: 480px;
-            margin: 0 auto;
-            border-radius: 16px;
-        }
-
-        .btn-primary {
-            background-color: #2b6cb0;
-            border-color: #2b6cb0;
-            font-weight: 600;
-            border-radius: 8px;
-            padding: 0.6rem 1.25rem;
-        }
-
-        .btn-primary:hover {
-            background-color: #1a4971;
-            border-color: #1a4971;
-        }
-
-        .form-control {
-            border-radius: 8px;
-            padding: 0.65rem 0.9rem;
-            border: 1px solid #cbd5e0;
-        }
-
-        .form-control:focus {
-            border-color: #2b6cb0;
-            box-shadow: 0 0 0 0.25rem rgba(43, 108, 176, 0.25);
-        }
-
-        .badge-stock {
-            font-size: 0.8rem;
-            padding: 0.35em 0.7em;
-            border-radius: 6px;
-        }
-
-        .price-tag {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #198754;
-        }
-
-        footer {
-            background-color: #ffffff;
-            border-top: 1px solid #e9ecef;
-            padding: 1.5rem 0;
-            color: #6c757d;
             font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.85rem 1.25rem;
         }
+        .alert-success {
+            background: #f0fdf4;
+            color: #15803d;
+            border-left: 4px solid #22c55e;
+        }
+        .alert-danger {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-left: 4px solid #ef4444;
+        }
+
+        /* ── Cards ─────────────────────────────────────────── */
+        .card {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+
+        /* ── Buttons ───────────────────────────────────────── */
+        .btn {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 600;
+            border-radius: 9px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            border: none;
+            font-weight: 700;
+            box-shadow: 0 3px 10px rgba(99,102,241,0.3);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            box-shadow: 0 5px 16px rgba(99,102,241,0.4);
+        }
+
+        /* ── Form Controls ─────────────────────────────────── */
+        .form-control, .form-select {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.92rem;
+            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            padding: 0.65rem 0.95rem;
+            color: #1e293b;
+            background: #fff;
+            transition: border-color 0.18s, box-shadow 0.18s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+        }
+        .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #374151;
+            margin-bottom: 0.4rem;
+        }
+
+        /* ── Footer ────────────────────────────────────────── */
+        .app-footer {
+            background: #fff;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.4rem 0;
+            text-align: center;
+            font-size: 0.82rem;
+            color: #94a3b8;
+            font-weight: 500;
+            margin-top: auto;
+        }
+
+        /* ── Auth pages: full-screen split layout ──────────── */
+        .auth-layout {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+            padding: 2rem 1rem;
+        }
+        .auth-card-wrap {
+            width: 100%;
+            max-width: 440px;
+        }
+        .auth-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+            padding: 2.5rem 2.5rem 2rem;
+        }
+
+        /* ── Section eyebrow label ─────────────────────────── */
+        .section-eyebrow {
+            display: inline-block;
+            background: linear-gradient(135deg, #ede9fe, #dbeafe);
+            color: #4f46e5;
+            border-radius: 50px;
+            padding: 0.28rem 1rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            margin-bottom: 0.7rem;
+        }
+
+        /* ── Badge / pill stock ────────────────────────────── */
+        .badge { font-family: 'Inter', sans-serif; font-weight: 700; }
+        .badge-stock { font-size: 0.75rem; padding: 0.3em 0.65em; border-radius: 6px; }
+        .price-tag { font-size: 1.4rem; font-weight: 800; color: #059669; }
     </style>
 </head>
 <body>
 
-    <!-- Navigation Header (Hidden on Login, Register, and Password Reset pages) -->
-    @unless(request()->routeIs('login', 'register', 'admin.login', 'password.request', 'password.reset', 'admin.password.request', 'admin.password.reset'))
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container">
+    {{-- ── Navbar (hidden on auth pages) ─────────────────── --}}
+    @unless(request()->routeIs('login','register','admin.login','password.request','password.reset','admin.password.request','admin.password.reset'))
+    <nav class="app-nav">
+        <div class="container app-nav-inner">
+
             @if(Auth::check() && Auth::user()->isAdmin())
-                {{-- Admin Navigation Bar --}}
-                @php
-                    $navOutOfStockCount = \App\Models\Product::where('stock', '<=', 0)->count();
-                @endphp
-                <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('admin.dashboard') }}">
-                    <span style="font-size: 1.4rem;">🛡️</span>
-                    <span style="color:#6f42c1;">Razorpay Admin</span>
+                {{-- Admin Nav --}}
+                @php $navOutOfStockCount = \App\Models\Product::where('stock', '<=', 0)->count(); @endphp
+
+                <a class="nav-brand" href="{{ route('admin.dashboard') }}">
+                    <div class="nav-brand-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <span>Razorpay Admin</span>
                 </a>
 
-                <div class="d-flex align-items-center gap-3">
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link fw-semibold text-secondary">Dashboard</a>
-                    <a href="{{ route('admin.products.index') }}" class="nav-link fw-semibold text-secondary">Manage Products</a>
-                    <a href="{{ route('admin.orders.index') }}" class="nav-link fw-semibold text-secondary">Manage Orders</a>
+                <div class="nav-links">
+                    <a href="{{ route('admin.dashboard') }}"     class="nav-link-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
+                    <a href="{{ route('admin.products.index') }}" class="nav-link-item {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">Products</a>
+                    <a href="{{ route('admin.orders.index') }}"  class="nav-link-item {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">Orders</a>
 
                     @if($navOutOfStockCount > 0)
-                        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-danger fw-bold d-flex align-items-center gap-1 shadow-sm px-2 py-1" title="Products needing restock">
-                            <span>🚨</span>
-                            <span>{{ $navOutOfStockCount }} Out of Stock</span>
+                        <a href="{{ route('admin.dashboard') }}" class="nav-link-item" style="color:#ef4444; background:#fef2f2;" title="Out of stock products">
+                            🚨 {{ $navOutOfStockCount }} Out of Stock
                         </a>
                     @endif
+                </div>
 
-                    <span class="badge bg-light text-dark border px-3 py-2 ms-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="nav-user-chip">
                         👤 {{ Auth::user()->name }}
-                        <span class="badge ms-1" style="background-color:#6f42c1; color:white; font-size:0.68rem;">ADMIN</span>
+                        <span style="background:#6f42c1;color:#fff;font-size:0.65rem;padding:0.15rem 0.45rem;border-radius:4px;font-weight:700;">ADMIN</span>
                     </span>
-
-                    <form action="{{ route('logout') }}" method="POST" class="d-inline m-0 p-0">
+                    <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
                         @csrf
-                        <button type="submit" class="btn btn-outline-danger btn-sm fw-semibold">
-                            Logout
-                        </button>
+                        <button type="submit" class="nav-logout-btn">Logout</button>
                     </form>
                 </div>
+
             @else
-                {{-- Customer / Guest Navigation Bar --}}
-                <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('products.index') }}">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
+                {{-- Customer Nav --}}
+                <a class="nav-brand" href="{{ route('home') }}">
+                    <div class="nav-brand-icon">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    </div>
                     <span>Razorpay Store</span>
                 </a>
 
-                <div class="d-flex align-items-center gap-3">
-                    <a href="{{ route('products.index') }}" class="nav-link fw-semibold">Products</a>
+                <div class="nav-links">
+                    <a href="{{ route('home') }}"          class="nav-link-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+                    <a href="{{ route('products.index') }}" class="nav-link-item {{ request()->routeIs('products.index') ? 'active' : '' }}">Products</a>
+                </div>
 
-                    <a href="{{ route('cart.index') }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-2 position-relative">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="9" cy="21" r="1"></circle>
-                            <circle cx="20" cy="21" r="1"></circle>
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                        </svg>
-                        <span>Cart</span>
-                        @php
-                            $cartCount = array_sum(array_column(session('cart', []), 'quantity'));
-                        @endphp
+                <div class="d-flex align-items-center gap-2">
+                    @php $cartCount = array_sum(array_column(session('cart', []), 'quantity')); @endphp
+                    <a href="{{ route('cart.index') }}" class="nav-cart-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        Cart
                         @if($cartCount > 0)
-                            <span class="badge bg-danger rounded-pill px-2 py-1" style="font-size: 0.72rem;">
-                                {{ $cartCount }}
-                            </span>
+                            <span class="nav-cart-dot">{{ $cartCount }}</span>
                         @endif
                     </a>
 
                     @auth
-                        <span class="badge bg-light text-dark border px-3 py-2">
-                            👤 {{ Auth::user()->name }}
-                        </span>
-
-                        <form action="{{ route('logout') }}" method="POST" class="d-inline m-0 p-0">
+                        <span class="nav-user-chip">👤 {{ Auth::user()->name }}</span>
+                        <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
                             @csrf
-                            <button type="submit" class="btn btn-outline-danger btn-sm fw-semibold">
-                                Logout
-                            </button>
+                            <button type="submit" class="nav-logout-btn">Logout</button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-primary btn-sm">Login</a>
-                        <a href="{{ route('register') }}" class="btn btn-outline-secondary btn-sm">Register</a>
+                        <a href="{{ route('login') }}" class="nav-login-btn">Login</a>
                     @endauth
                 </div>
             @endif
+
         </div>
     </nav>
     @endunless
 
-    <!-- Main Container -->
+    {{-- ── Main ────────────────────────────────────────── --}}
     <main class="main-content container">
-        <!-- Flash Messages -->
+
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
-                <strong>✓ Success:</strong> {{ session('success') }}
+            <div class="alert alert-success mb-4" role="alert">
+                <strong>✓</strong> {{ session('success') }}
             </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger shadow-sm mb-4" role="alert">
-                <strong>✕ Error:</strong> {{ session('error') }}
+            <div class="alert alert-danger mb-4" role="alert">
+                <strong>✕</strong> {{ session('error') }}
             </div>
         @endif
 
         @if($errors->any())
-            <div class="alert alert-danger shadow-sm mb-4" role="alert">
+            <div class="alert alert-danger mb-4" role="alert">
                 <ul class="mb-0 ps-3">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -219,30 +394,24 @@
         @yield('content')
     </main>
 
-    <!-- Footer -->
-    <footer class="text-center">
+    {{-- ── Footer ───────────────────────────────────────── --}}
+    <footer class="app-footer">
         <div class="container">
-            <p class="mb-0">© {{ date('Y') }} Razorpay Demo Store. Pure HTML & Bootstrap CSS (No JavaScript).</p>
+            © {{ date('Y') }} Razorpay Demo Store &nbsp;·&nbsp; Secure Payments by Razorpay
         </div>
     </footer>
 
-    <!-- Password Visibility Toggle Script -->
+    {{-- Password toggle script --}}
     <script>
         function togglePasswordVisibility(inputId, btn) {
             const input = document.getElementById(inputId);
             if (!input) return;
             const isPassword = input.type === 'password';
             input.type = isPassword ? 'text' : 'password';
-
-            if (isPassword) {
-                // Eye Slash icon (Visible state)
-                btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
-                btn.setAttribute('title', 'Hide password');
-            } else {
-                // Eye icon (Hidden state)
-                btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
-                btn.setAttribute('title', 'Show password');
-            }
+            btn.innerHTML = isPassword
+                ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`
+                : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+            btn.setAttribute('title', isPassword ? 'Hide password' : 'Show password');
         }
     </script>
 </body>

@@ -23,15 +23,13 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
-            // Admin accidentally hit /login → send them to their own login portal
             if (Auth::user()->isAdmin()) {
                 return redirect()->route('admin.login')
                     ->with('error', 'You are signed in as an admin. Use the Admin Portal below.');
             }
-            return redirect()->route('products.index');
+            return redirect()->route('home');
         }
 
-        // Always show customer login — never admin login
         return view('auth.login');
     }
 
@@ -88,7 +86,7 @@ class AuthController extends Controller
                 // Restore/merge user's saved DB cart with current session cart
                 $this->syncUserCartAfterLogin($user, $sessionCart);
 
-                return redirect()->intended(route('products.index'))
+                return redirect()->intended(route('home'))
                     ->with('success', "Welcome back, {$user->name}!");
             }
 
@@ -138,7 +136,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return Auth::user()->isAdmin()
                 ? redirect()->route('admin.dashboard')
-                : redirect()->route('products.index');
+                : redirect()->route('home');
         }
 
         return view('auth.register');
@@ -170,7 +168,7 @@ class AuthController extends Controller
 
         $this->syncUserCartAfterLogin($user, $sessionCart);
 
-        return redirect()->route('products.index')
+        return redirect()->route('home')
             ->with('success', "Registration successful! Welcome, {$user->name}.");
     }
 

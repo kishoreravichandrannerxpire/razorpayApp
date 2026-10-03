@@ -11,8 +11,15 @@ class Order extends Model
         'order_number',
         'total_amount',
         'currency',
+        'coupon_code',
+        'discount_amount',
         'status',
         'razorpay_order_id',
+    ];
+
+    protected $casts = [
+        'total_amount' => 'float',
+        'discount_amount' => 'float',
     ];
     public function user()
     {
