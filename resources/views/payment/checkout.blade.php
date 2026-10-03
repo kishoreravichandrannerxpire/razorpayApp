@@ -9,7 +9,7 @@
         <!-- Page Header -->
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
             <div>
-                <h2 class="h3 fw-bold mb-1">Order Checkout</h2>
+                <h2 class="h3 fw-bold mb-1 text-white">Order Checkout</h2>
                 <p class="text-muted mb-0">Confirm your product details and proceed to secure payment</p>
             </div>
             <div>
@@ -23,35 +23,35 @@
             <!-- Customer & Order Information (Col 5) -->
             <div class="col-lg-5">
                 <div class="card shadow-sm border-0 mb-4">
-                    <div class="card-header bg-light py-3">
-                        <h5 class="fw-bold mb-0 text-dark">Customer Details</h5>
+                    <div class="card-header py-3">
+                        <h5 class="fw-bold mb-0 text-white">Customer Details</h5>
                     </div>
                     <div class="card-body p-4">
                         <div class="mb-3 pb-2 border-bottom">
                             <small class="text-muted d-block">Order Reference</small>
-                            <span class="fw-bold text-dark fs-6">{{ $order->order_number }}</span>
+                            <span class="fw-bold text-white fs-6 font-monospace">{{ $order->order_number }}</span>
                         </div>
 
                         <div class="mb-3 pb-2 border-bottom">
                             <small class="text-muted d-block">Full Name</small>
-                            <span class="fw-semibold text-dark">{{ $order->user->name ?? Auth::user()->name }}</span>
+                            <span class="fw-semibold text-white">{{ $order->user->name ?? Auth::user()->name }}</span>
                         </div>
 
                         <div class="mb-3 pb-2 border-bottom">
                             <small class="text-muted d-block">Email Address</small>
-                            <span class="fw-semibold text-dark">{{ $order->user->email ?? Auth::user()->email }}</span>
+                            <span class="fw-semibold text-white">{{ $order->user->email ?? Auth::user()->email }}</span>
                         </div>
 
                         @if(!empty($order->user->phone ?? Auth::user()->phone))
                             <div class="mb-3 pb-2 border-bottom">
                                 <small class="text-muted d-block">Phone Number</small>
-                                <span class="fw-semibold text-dark">{{ $order->user->phone ?? Auth::user()->phone }}</span>
+                                <span class="fw-semibold text-white">{{ $order->user->phone ?? Auth::user()->phone }}</span>
                             </div>
                         @endif
 
                         <div class="mb-0">
                             <small class="text-muted d-block">Payment Status</small>
-                            <span class="badge bg-warning text-dark px-3 py-2 mt-1">
+                            <span class="badge bg-warning text-dark px-3 py-2 mt-1 fw-bold">
                                 ⏳ {{ $order->status }}
                             </span>
                         </div>
@@ -59,7 +59,7 @@
                 </div>
 
                 <!-- Safe & Secure Payment Card -->
-                <div class="card shadow-sm border-0 bg-light">
+                <div class="card shadow-sm border-0">
                     <div class="card-body p-3 text-center">
                         <div class="d-flex align-items-center justify-content-center gap-2 text-success fw-bold mb-1">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -78,8 +78,8 @@
             <!-- Product Details & Summary (Col 7) -->
             <div class="col-lg-7">
                 <div class="card shadow-sm border-0">
-                    <div class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
-                        <h5 class="fw-bold mb-0 text-dark">Purchased Products</h5>
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0 text-white">Purchased Products</h5>
                         <span class="badge bg-primary rounded-pill">
                             {{ $order->orderItems->count() }} {{ Str::plural('Item', $order->orderItems->count()) }}
                         </span>
@@ -88,7 +88,7 @@
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table align-middle mb-0">
-                                <thead class="table-light">
+                                <thead>
                                     <tr>
                                         <th class="ps-4 py-3">Product Name</th>
                                         <th class="py-3 text-center">Unit Price</th>
@@ -101,15 +101,15 @@
                                         <tr>
                                             <td class="ps-4 py-3">
                                                 <div class="d-flex align-items-center gap-2">
-                                                    <div class="rounded bg-light p-2 border d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2b6cb0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <div class="rounded p-2 border d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3) !important;">
+                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                             <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                                                             <line x1="8" y1="21" x2="16" y2="21"></line>
                                                             <line x1="12" y1="17" x2="12" y2="21"></line>
                                                         </svg>
                                                     </div>
                                                     <div>
-                                                        <span class="fw-bold text-dark d-block">
+                                                        <span class="fw-bold text-white d-block">
                                                             {{ $item->product->product_name ?? 'Product' }}
                                                         </span>
                                                         @if(!empty($item->product->description))
@@ -120,11 +120,11 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="text-center text-secondary fw-semibold">
+                                            <td class="text-center text-white fw-semibold">
                                                 ₹{{ number_format($item->price, 2) }}
                                             </td>
                                             <td class="text-center">
-                                                <span class="badge bg-light text-dark border px-2 py-1 fs-6">
+                                                <span class="badge bg-secondary text-white border px-2 py-1 fs-6">
                                                     {{ $item->quantity }}
                                                 </span>
                                             </td>
@@ -145,11 +145,22 @@
                     </div>
 
                     <!-- Price Calculation Breakdown -->
-                    <div class="card-footer bg-white p-4 border-top">
+                    <div class="card-footer p-4 border-top">
+                        @php
+                            $itemsSubtotal = $order->orderItems->sum('subtotal');
+                        @endphp
+
                         <div class="d-flex justify-content-between mb-2 text-muted">
-                            <span>Items Total</span>
-                            <span class="fw-semibold text-dark">₹{{ number_format($order->total_amount, 2) }}</span>
+                            <span>Items Subtotal</span>
+                            <span class="fw-semibold text-white">₹{{ number_format($itemsSubtotal, 2) }}</span>
                         </div>
+
+                        @if(!empty($order->coupon_code) && $order->discount_amount > 0)
+                            <div class="d-flex justify-content-between mb-2 text-success fw-semibold">
+                                <span>Applied Coupon ({{ $order->coupon_code }})</span>
+                                <span>- ₹{{ number_format($order->discount_amount, 2) }}</span>
+                            </div>
+                        @endif
 
                         <div class="d-flex justify-content-between mb-3 text-muted">
                             <span>Shipping & Handling</span>
@@ -159,7 +170,7 @@
                         <hr class="my-3">
 
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <span class="h5 fw-bold text-dark mb-0">Total Payable Amount</span>
+                            <span class="h5 fw-bold text-white mb-0">Total Payable Amount</span>
                             <span class="h3 fw-bold text-success mb-0">₹{{ number_format($order->total_amount, 2) }}</span>
                         </div>
 
@@ -187,7 +198,7 @@
     <input type="hidden" name="razorpay_signature" id="razorpay_signature">
 </form>
 
-<!-- Razorpay Checkout Gateway SDK (Only for gateway popup modal) -->
+<!-- Razorpay Checkout Gateway SDK -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 var options = {
@@ -203,7 +214,7 @@ var options = {
         contact: "{{ $order->user->phone ?? Auth::user()->phone ?? '' }}"
     },
     theme: {
-        color: "#2b6cb0"
+        color: "#3b82f6"
     },
     handler: function (response) {
         document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;

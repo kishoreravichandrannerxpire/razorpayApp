@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
     <div>
-        <h2 class="h3 fw-bold mb-1">Shopping Cart</h2>
+        <h2 class="h3 fw-bold mb-1 text-white">Shopping Cart</h2>
         <p class="text-muted mb-0">Review your selected items and apply promo coupons before checkout</p>
     </div>
     <div>
@@ -23,7 +23,7 @@
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="ps-4 py-3" style="min-width: 220px;">Product</th>
                                     <th scope="col" class="py-3 text-center">Unit Price</th>
@@ -38,15 +38,15 @@
                                         <!-- Product info -->
                                         <td class="ps-4 py-3">
                                             <div class="d-flex align-items-center gap-3">
-                                                <div class="rounded bg-light p-2 border d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-                                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2b6cb0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <div class="rounded p-2 border d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3) !important;">
+                                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                                                         <line x1="8" y1="21" x2="16" y2="21"></line>
                                                         <line x1="12" y1="17" x2="12" y2="21"></line>
                                                     </svg>
                                                 </div>
                                                 <div>
-                                                    <h6 class="fw-bold mb-0 text-dark">
+                                                    <h6 class="fw-bold mb-0 text-white">
                                                         {{ $item['name'] }}
                                                         @if(!empty($item['discount_percentage']) && $item['discount_percentage'] > 0)
                                                             <span class="badge bg-danger ms-1" style="font-size: 0.7rem;">{{ $item['discount_percentage'] }}% OFF</span>
@@ -65,11 +65,11 @@
                                         <td class="text-center fw-semibold text-secondary">
                                             @if(!empty($item['discount_percentage']) && $item['discount_percentage'] > 0)
                                                 <div>
-                                                    <span class="fw-bold text-dark">₹{{ number_format($item['price'], 2) }}</span>
+                                                    <span class="fw-bold text-white">₹{{ number_format($item['price'], 2) }}</span>
                                                     <small class="text-muted text-decoration-line-through d-block" style="font-size: 0.75rem;">₹{{ number_format($item['original_price'], 2) }}</small>
                                                 </div>
                                             @else
-                                                ₹{{ number_format($item['price'], 2) }}
+                                                <span class="text-white">₹{{ number_format($item['price'], 2) }}</span>
                                             @endif
                                         </td>
 
@@ -98,9 +98,9 @@
                                                     </button>
                                                 </div>
                                                 @if($extraStock > 0)
-                                                    <small class="text-muted" style="font-size: 0.72rem;">+{{ $extraStock }} more in stock</small>
+                                                    <small class="text-muted" style="font-size: 0.72rem;">+{{ $extraStock }} in stock</small>
                                                 @else
-                                                    <small class="text-warning fw-semibold" style="font-size: 0.72rem;">Max available</small>
+                                                    <small class="text-warning fw-semibold" style="font-size: 0.72rem;">Max limit</small>
                                                 @endif
                                             </form>
                                         </td>
@@ -127,7 +127,7 @@
                 </div>
 
                 <!-- Card Footer Actions -->
-                <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 px-4 border-top">
+                <div class="card-footer d-flex justify-content-between align-items-center py-3 px-4 border-top">
                     <a href="{{ route('products.index') }}" class="btn btn-outline-secondary btn-sm">
                         + Add More Products
                     </a>
@@ -143,18 +143,18 @@
 
             <!-- Available Coupons Banner Card -->
             @if(isset($availableCoupons) && count($availableCoupons) > 0)
-                <div class="card border-0 bg-light shadow-sm p-3">
-                    <div class="d-flex align-items-center gap-2 mb-2">
+                <div class="card border-0 shadow-sm p-3">
+                    <div class="d-flex align-items-center gap-2 mb-3">
                         <span class="fs-5">🎟️</span>
-                        <h6 class="fw-bold mb-0 text-dark">Available Offers & Coupons</h6>
+                        <h6 class="fw-bold mb-0 text-white">Available Offers & Promo Coupons</h6>
                     </div>
                     <div class="row g-2">
                         @foreach($availableCoupons as $c)
                             <div class="col-md-6">
-                                <div class="p-2 border rounded bg-white d-flex justify-content-between align-items-center">
+                                <div class="p-2 border rounded d-flex justify-content-between align-items-center" style="background: rgba(255, 255, 255, 0.03);">
                                     <div>
-                                        <span class="badge bg-primary-subtle text-primary fw-bold font-monospace me-1">{{ $c->code }}</span>
-                                        <small class="text-muted d-block" style="font-size: 0.78rem;">
+                                        <span class="badge bg-primary-subtle text-info fw-bold font-monospace me-1">{{ $c->code }}</span>
+                                        <small class="text-muted d-block mt-1" style="font-size: 0.78rem;">
                                             @if($c->type === 'percent')
                                                 {{ $c->value }}% OFF @if($c->max_discount_amount)(Max ₹{{ $c->max_discount_amount }})@endif
                                             @else
@@ -182,29 +182,29 @@
 
         <!-- Order Summary & Checkout Action (Col 4) -->
         <div class="col-lg-4">
-            <div class="card shadow-sm border-0 sticky-top" style="top: 2rem;">
-                <div class="card-header bg-light py-3">
-                    <h5 class="fw-bold mb-0 text-dark">Order Summary</h5>
+            <div class="card shadow-sm border-0 sticky-top" style="top: 5rem;">
+                <div class="card-header py-3">
+                    <h5 class="fw-bold mb-0 text-white">Order Summary</h5>
                 </div>
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between mb-2 text-muted">
                         <span>Total Items</span>
-                        <span class="fw-semibold text-dark">{{ array_sum(array_column($cart, 'quantity')) }} items</span>
+                        <span class="fw-semibold text-white">{{ array_sum(array_column($cart, 'quantity')) }} items</span>
                     </div>
 
                     <div class="d-flex justify-content-between mb-2 text-muted">
                         <span>Subtotal</span>
-                        <span class="fw-semibold text-dark">₹{{ number_format($subtotal, 2) }}</span>
+                        <span class="fw-semibold text-white">₹{{ number_format($subtotal, 2) }}</span>
                     </div>
 
                     <!-- Coupon Section inside Summary -->
                     <div class="my-3 py-3 border-top border-bottom">
-                        <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.85rem;">Have a Promo Code / Coupon?</label>
+                        <label class="form-label fw-bold text-white mb-2" style="font-size: 0.85rem;">Promo Code / Coupon</label>
                         @if(session('coupon'))
-                            <div class="d-flex justify-content-between align-items-center p-2 bg-success-subtle text-success rounded border border-success-subtle mb-2">
+                            <div class="d-flex justify-content-between align-items-center p-2 rounded border border-success mb-2" style="background: rgba(34, 197, 94, 0.12);">
                                 <div>
-                                    <span class="fw-bold font-monospace">🎟️ {{ session('coupon.code') }}</span>
-                                    <small class="d-block" style="font-size: 0.75rem;">Applied Discount: -₹{{ number_format($discountAmount, 2) }}</small>
+                                    <span class="fw-bold font-monospace text-success">🎟️ {{ session('coupon.code') }}</span>
+                                    <small class="d-block text-success" style="font-size: 0.75rem;">Discount: -₹{{ number_format($discountAmount, 2) }}</small>
                                 </div>
                                 <form action="{{ route('cart.coupon.remove') }}" method="POST" class="m-0">
                                     @csrf
@@ -223,7 +223,7 @@
                                     placeholder="Enter Code (e.g. WELCOME20)"
                                     required
                                 >
-                                <button type="submit" class="btn btn-dark btn-sm px-3 fw-bold">
+                                <button type="submit" class="btn btn-primary btn-sm px-3 fw-bold">
                                     Apply
                                 </button>
                             </form>
@@ -245,7 +245,7 @@
                     <hr class="my-3">
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <span class="h6 fw-bold mb-0 text-dark">Total Amount</span>
+                        <span class="h6 fw-bold mb-0 text-white">Total Amount</span>
                         <span class="h4 fw-bold text-success mb-0">₹{{ number_format($total, 2) }}</span>
                     </div>
 
@@ -277,14 +277,14 @@
     <!-- Empty Cart State -->
     <div class="card border-0 shadow-sm text-center py-5">
         <div class="card-body py-5">
-            <div class="rounded-circle bg-light p-4 d-inline-flex align-items-center justify-content-center mb-3 border">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6c757d" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <div class="rounded-circle p-4 d-inline-flex align-items-center justify-content-center mb-3 border" style="background: rgba(255, 255, 255, 0.05);">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="9" cy="21" r="1"></circle>
                     <circle cx="20" cy="21" r="1"></circle>
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                 </svg>
             </div>
-            <h4 class="fw-bold text-dark mb-2">Your Cart is Empty</h4>
+            <h4 class="fw-bold text-white mb-2">Your Cart is Empty</h4>
             <p class="text-muted mb-4">You haven't added any products to your cart yet.</p>
             <a href="{{ route('products.index') }}" class="btn btn-primary px-4 py-2">
                 Browse Products

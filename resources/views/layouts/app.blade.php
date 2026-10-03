@@ -13,35 +13,55 @@
         /* ── Base / Typography ─────────────────────────────── */
         *, *::before, *::after { box-sizing: border-box; }
 
+        /* ── Design System Variables ───────────────────────── */
+        :root {
+            --bg-page: #0b0f19;
+            --bg-card: #131c2e;
+            --bg-card-header: #1a253d;
+            --bg-input: #1a253d;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-focus: #3b82f6;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-indigo: #6366f1;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             font-size: 15px;
             line-height: 1.6;
-            background: #f1f5f9;
-            color: #1e293b;
+            background: var(--bg-page);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             -webkit-font-smoothing: antialiased;
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        h1, h2, h3, h4, h5, h6, .text-dark {
             font-family: 'Inter', sans-serif;
             font-weight: 800;
             letter-spacing: -0.4px;
-            color: #0f172a;
+            color: var(--text-main) !important;
+        }
+
+        .text-muted, .text-secondary {
+            color: var(--text-sub) !important;
         }
 
         /* ── Navbar ────────────────────────────────────────── */
         .app-nav {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid #e2e8f0;
+            background: rgba(11, 15, 25, 0.92);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-color);
             padding: 0.75rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
 
         .app-nav-inner {
@@ -58,10 +78,10 @@
             text-decoration: none;
             font-size: 1.05rem;
             font-weight: 800;
-            color: #1e293b;
+            color: #f8fafc;
             letter-spacing: -0.3px;
         }
-        .nav-brand:hover { color: #3b82f6; }
+        .nav-brand:hover { color: #60a5fa; }
         .nav-brand-icon {
             width: 34px; height: 34px;
             background: linear-gradient(135deg, #3b82f6, #6366f1);
@@ -79,22 +99,22 @@
         .nav-link-item {
             font-size: 0.88rem;
             font-weight: 600;
-            color: #64748b;
+            color: var(--text-sub);
             text-decoration: none;
             padding: 0.45rem 0.85rem;
             border-radius: 8px;
             transition: background 0.18s, color 0.18s;
         }
         .nav-link-item:hover,
-        .nav-link-item.active { color: #3b82f6; background: #eff6ff; }
+        .nav-link-item.active { color: #60a5fa; background: rgba(59, 130, 246, 0.15); }
 
         .nav-cart-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.45rem;
-            background: #f8fafc;
-            border: 1.5px solid #e2e8f0;
-            color: #374151;
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-color);
+            color: #f1f5f9;
             font-size: 0.85rem;
             font-weight: 700;
             padding: 0.48rem 1rem;
@@ -103,7 +123,7 @@
             position: relative;
             transition: all 0.18s;
         }
-        .nav-cart-btn:hover { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+        .nav-cart-btn:hover { border-color: #60a5fa; color: #60a5fa; background: rgba(59, 130, 246, 0.2); }
 
         .nav-cart-dot {
             position: absolute;
@@ -117,16 +137,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid #fff;
+            border: 2px solid var(--bg-page);
         }
 
         .nav-user-chip {
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            color: #374151;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #f1f5f9;
             font-size: 0.82rem;
             font-weight: 600;
             padding: 0.42rem 0.9rem;
@@ -136,16 +156,15 @@
         .nav-logout-btn {
             font-size: 0.82rem;
             font-weight: 700;
-            color: #ef4444;
+            color: #f87171;
             background: transparent;
-            border: 1.5px solid #fca5a5;
+            border: 1.5px solid rgba(239, 68, 68, 0.4);
             padding: 0.42rem 0.9rem;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.18s;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
-        .nav-logout-btn:hover { background: #fef2f2; border-color: #ef4444; }
+        .nav-logout-btn:hover { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #fff; }
 
         .nav-login-btn {
             font-size: 0.85rem;
@@ -168,7 +187,35 @@
             padding-bottom: 3.5rem;
         }
 
-        /* ── Alerts ────────────────────────────────────────── */
+        /* ── Global Card & Container Overrides ──────────────── */
+        .card, .bg-white, .bg-light {
+            background: var(--bg-card) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-main) !important;
+        }
+        .card-header, .table-light, .table-light th {
+            background: var(--bg-card-header) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-main) !important;
+        }
+        .card-footer {
+            background: var(--bg-card-header) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-main) !important;
+        }
+        .border-bottom, .border-top, .border {
+            border-color: var(--border-color) !important;
+        }
+
+        /* Tables */
+        .table {
+            color: var(--text-main) !important;
+        }
+        .table td, .table th {
+            border-color: var(--border-color) !important;
+        }
+
+        /* Alerts */
         .alert {
             border: none;
             border-radius: 12px;
@@ -177,24 +224,17 @@
             padding: 0.85rem 1.25rem;
         }
         .alert-success {
-            background: #f0fdf4;
-            color: #15803d;
-            border-left: 4px solid #22c55e;
+            background: rgba(16, 185, 129, 0.15) !important;
+            color: #34d399 !important;
+            border-left: 4px solid #10b981 !important;
         }
         .alert-danger {
-            background: #fef2f2;
-            color: #b91c1c;
-            border-left: 4px solid #ef4444;
+            background: rgba(239, 68, 68, 0.15) !important;
+            color: #fca5a5 !important;
+            border-left: 4px solid #ef4444 !important;
         }
 
-        /* ── Cards ─────────────────────────────────────────── */
-        .card {
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-        }
-
-        /* ── Buttons ───────────────────────────────────────── */
+        /* Buttons */
         .btn {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             font-weight: 600;
@@ -205,42 +245,53 @@
             border: none;
             font-weight: 700;
             box-shadow: 0 3px 10px rgba(99,102,241,0.3);
+            color: #fff !important;
         }
         .btn-primary:hover {
             background: linear-gradient(135deg, #2563eb, #4f46e5);
             box-shadow: 0 5px 16px rgba(99,102,241,0.4);
+            color: #fff !important;
+        }
+        .btn-outline-secondary {
+            color: var(--text-sub) !important;
+            border-color: var(--border-color) !important;
+        }
+        .btn-outline-secondary:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
         }
 
-        /* ── Form Controls ─────────────────────────────────── */
+        /* Form Controls */
         .form-control, .form-select {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             font-size: 0.92rem;
             border-radius: 10px;
-            border: 1.5px solid #e2e8f0;
+            border: 1.5px solid var(--border-color) !important;
             padding: 0.65rem 0.95rem;
-            color: #1e293b;
-            background: #fff;
+            color: var(--text-main) !important;
+            background: var(--bg-input) !important;
             transition: border-color 0.18s, box-shadow 0.18s;
         }
         .form-control:focus, .form-select:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+            border-color: var(--border-focus) !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
         }
         .form-label {
             font-weight: 600;
             font-size: 0.85rem;
-            color: #374151;
+            color: var(--text-sub);
             margin-bottom: 0.4rem;
         }
 
-        /* ── Footer ────────────────────────────────────────── */
+        /* Footer */
         .app-footer {
-            background: #fff;
-            border-top: 1px solid #e2e8f0;
+            background: #070a12;
+            border-top: 1px solid var(--border-color);
             padding: 1.4rem 0;
             text-align: center;
             font-size: 0.82rem;
-            color: #94a3b8;
+            color: var(--text-sub);
             font-weight: 500;
             margin-top: auto;
         }
@@ -306,6 +357,7 @@
                 <div class="nav-links">
                     <a href="{{ route('admin.dashboard') }}"     class="nav-link-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
                     <a href="{{ route('admin.products.index') }}" class="nav-link-item {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">Products</a>
+                    <a href="{{ route('admin.coupons.index') }}"  class="nav-link-item {{ request()->routeIs('admin.coupons.*') ? 'active' : '' }}">Coupons</a>
                     <a href="{{ route('admin.orders.index') }}"  class="nav-link-item {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">Orders</a>
 
                     @if($navOutOfStockCount > 0)

@@ -117,17 +117,17 @@
     flex-wrap: wrap;
     gap: 1rem;
     padding-bottom: 1.5rem;
-    border-bottom: 2px solid #f1f5f9;
+    border-bottom: 2px solid var(--border-color);
 }
 .products-page-title {
     font-size: clamp(1.8rem, 4vw, 2.6rem);
     font-weight: 900;
-    color: #0f172a;
+    color: var(--text-main);
     margin: 0.3rem 0 0.25rem;
     letter-spacing: -1px;
 }
 .products-page-sub {
-    color: #64748b;
+    color: var(--text-sub);
     margin: 0;
     font-size: 1rem;
 }
@@ -143,25 +143,25 @@
 
 /* ── Product Card ─── */
 .pcard {
-    background: #fff;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     transition: transform 0.28s cubic-bezier(.22,.68,0,1.4), box-shadow 0.28s ease;
     display: flex;
     flex-direction: column;
 }
 .pcard:hover {
     transform: translateY(-8px) scale(1.01);
-    box-shadow: 0 20px 48px rgba(0,0,0,0.13);
+    box-shadow: 0 20px 48px rgba(0,0,0,0.4);
 }
 
 .pcard-img-wrap {
     position: relative;
     height: 190px;
     overflow: hidden;
-    background: #f8fafc;
+    background: #0d1322;
 }
 .pcard-img {
     width: 100%;
@@ -185,9 +185,9 @@
     backdrop-filter: blur(6px);
     letter-spacing: 0.3px;
 }
-.pcard-badge--success { background: rgba(16,185,129,0.88); color:#fff; }
+.pcard-badge--success { background: rgba(16,185,129,0.9); color:#fff; }
 .pcard-badge--warn    { background: rgba(245,158,11,0.92); color:#fff; }
-.pcard-badge--danger  { background: rgba(239,68,68,0.88);  color:#fff; }
+.pcard-badge--danger  { background: rgba(239,68,68,0.9);  color:#fff; }
 
 .pcard-body {
     padding: 1.25rem 1.25rem 1.4rem;
@@ -198,12 +198,12 @@
 .pcard-name {
     font-size: 1.05rem;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--text-main);
     margin-bottom: 0.4rem;
 }
 .pcard-desc {
     font-size: 0.82rem;
-    color: #64748b;
+    color: var(--text-sub);
     line-height: 1.55;
     flex-grow: 1;
     margin-bottom: 0.85rem;
@@ -214,7 +214,7 @@
 .pcard-price {
     font-size: 1.55rem;
     font-weight: 900;
-    color: #059669;
+    color: #10b981;
     letter-spacing: -0.5px;
 }
 
@@ -224,18 +224,18 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 0.35rem 0.75rem;
 }
-.pcard-qty-label { font-size: 0.78rem; font-weight: 600; color: #64748b; white-space: nowrap; }
+.pcard-qty-label { font-size: 0.78rem; font-weight: 600; color: var(--text-sub); white-space: nowrap; }
 .pcard-qty-input {
     border: none;
     background: transparent;
     font-size: 0.9rem;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text-main);
     text-align: center;
     width: 100%;
     outline: none;
@@ -246,7 +246,7 @@
 .pcard-btn-cart {
     background: transparent;
     border: 1.5px solid #3b82f6;
-    color: #3b82f6;
+    color: #60a5fa;
     font-weight: 700;
     font-size: 0.82rem;
     padding: 0.6rem 0.5rem;
@@ -278,9 +278,9 @@
 }
 .pcard-soldout span { font-size: 0.82rem; color: #ef4444; font-weight: 600; }
 .pcard-btn-disabled {
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
-    color: #94a3b8;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    color: var(--text-sub);
     font-size: 0.85rem;
     padding: 0.6rem;
     border-radius: 10px;
@@ -290,8 +290,8 @@
 
 /* Empty state */
 .empty-state {
-    background: #fff;
-    border: 2px dashed #e2e8f0;
+    background: var(--bg-card);
+    border: 2px dashed var(--border-color);
     border-radius: 20px;
     padding: 4rem 2rem;
 }
