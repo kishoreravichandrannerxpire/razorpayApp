@@ -30,7 +30,7 @@ Route::get('/admin', function () {
 
 // ── Authentication Routes (guests only) ─────────────────────────────────
 Route::get('/login',    [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login',   [AuthController::class, 'login'])->name('login.submit');
+Route::post('/login',   [AuthController::class, 'login'])->middleware('throttle:5,30')->name('login.submit');
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register',[AuthController::class, 'register'])->name('register.submit');
 Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
@@ -41,10 +41,10 @@ Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.
 
 // Customer Password Reset & OTP Routes
 Route::get('/forgot-password',  [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
-Route::post('/forgot-password', [AuthController::class, 'sendOtp'])->name('password.email');
+Route::post('/forgot-password', [AuthController::class, 'sendOtp'])->middleware('throttle:5,30')->name('password.email');
 Route::get('/reset-password',   [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('/reset-password',  [AuthController::class, 'resetPassword'])->name('password.update');
-Route::post('/resend-otp',      [AuthController::class, 'resendOtp'])->name('password.resend');
+Route::post('/resend-otp',      [AuthController::class, 'resendOtp'])->middleware('throttle:5,30')->name('password.resend');
 
 // Admin Password Reset & OTP Routes
 Route::get('/admin/forgot-password',  [AuthController::class, 'showAdminForgotPasswordForm'])->name('admin.password.request');
