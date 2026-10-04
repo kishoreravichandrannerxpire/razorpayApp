@@ -53,9 +53,9 @@ class ProductImageHelper
         'ipad'         => 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&q=80&fit=crop',
 
         // Storage & Memory
-        'pendrive'     => 'https://images.unsplash.com/photo-1618609377864-68609b857e90?w=600&q=80&fit=crop',
-        'usb'          => 'https://images.unsplash.com/photo-1618609377864-68609b857e90?w=600&q=80&fit=crop',
-        'flash drive'  => 'https://images.unsplash.com/photo-1618609377864-68609b857e90?w=600&q=80&fit=crop',
+        'pendrive'     => 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&q=80&fit=crop',
+        'usb'          => 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&q=80&fit=crop',
+        'flash drive'  => 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&q=80&fit=crop',
         'ssd'          => 'https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=600&q=80&fit=crop',
         'hdd'          => 'https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=600&q=80&fit=crop',
         'hard disk'    => 'https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=600&q=80&fit=crop',
@@ -78,7 +78,7 @@ class ProductImageHelper
         'ethernet'     => 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80&fit=crop',
 
         // Camera & Visual
-        'webcam'       => 'https://images.unsplash.com/photo-1587826080692-f439cd0b70da?w=600&q=80&fit=crop',
+        'webcam'       => 'https://images.unsplash.com/photo-1588702547919-26089e690ecc?w=600&q=80&fit=crop',
         'camera'       => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80&fit=crop',
         'dslr'         => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80&fit=crop',
         'lens'         => 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&q=80&fit=crop',

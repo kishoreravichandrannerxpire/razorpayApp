@@ -209,10 +209,26 @@
 
         /* Tables */
         .table {
+            --bs-table-bg: var(--bg-card) !important;
+            --bs-table-color: var(--text-main) !important;
+            --bs-table-hover-bg: #1c273c !important;
+            --bs-table-hover-color: var(--text-main) !important;
+            --bs-table-striped-bg: #162033 !important;
+            --bs-table-striped-color: var(--text-main) !important;
+            color: var(--text-main) !important;
+            background-color: var(--bg-card) !important;
+        }
+        .table > :not(caption) > * > * {
+            background-color: var(--bg-card) !important;
+            color: var(--text-main) !important;
+            border-bottom-color: var(--border-color) !important;
+        }
+        .table-hover > tbody > tr:hover > * {
+            background-color: #1c273c !important;
             color: var(--text-main) !important;
         }
-        .table td, .table th {
-            border-color: var(--border-color) !important;
+        .table h1, .table h2, .table h3, .table h4, .table h5, .table h6, .table span, .table strong {
+            color: #ffffff !important;
         }
 
         /* Alerts */

@@ -46,7 +46,7 @@
                                                     </svg>
                                                 </div>
                                                 <div>
-                                                    <h6 class="fw-bold mb-0 text-white">
+                                                    <h6 class="fw-bold mb-0 text-white" style="font-size: 0.98rem; color: #ffffff !important;">
                                                         {{ $item['name'] }}
                                                         @if(!empty($item['discount_percentage']) && $item['discount_percentage'] > 0)
                                                             <span class="badge bg-danger ms-1" style="font-size: 0.7rem;">{{ $item['discount_percentage'] }}% OFF</span>

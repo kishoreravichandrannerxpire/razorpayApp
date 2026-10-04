@@ -19,8 +19,10 @@ class CartController extends Controller
         $subtotal = 0;
 
         foreach ($cart as $id => $item) {
-            // Re-fetch product to ensure live price & discount
+            // Re-fetch product to ensure live price, name & discount
             $product = Product::find($id);
+            $cart[$id]['name'] = $product ? $product->product_name : ($item['name'] ?? 'Product');
+            $cart[$id]['description'] = $product ? $product->description : ($item['description'] ?? '');
             $itemPrice = $product ? $product->finalPrice() : $item['price'];
             $cart[$id]['price'] = $itemPrice;
             $cart[$id]['original_price'] = $product ? (float) $product->price : $item['price'];
@@ -72,11 +74,15 @@ class CartController extends Controller
     public function add(Request $request)
     {
         $request->validate([
-            'product_id' => ['required', 'exists:products,id'],
+            'product_id' => ['required', 'integer'],
             'quantity' => ['nullable', 'integer', 'min:1'],
         ]);
 
-        $product = Product::findOrFail($request->product_id);
+        $product = Product::find($request->product_id);
+        if (! $product) {
+            return back()->with('error', 'Product not found.');
+        }
+
         $quantity = (int) $request->input('quantity', 1);
 
         $cart = session()->get('cart', []);
@@ -110,6 +116,10 @@ class CartController extends Controller
                 ['user_id' => Auth::id(), 'product_id' => $product->id],
                 ['quantity' => $cart[$product->id]['quantity']]
             );
+        }
+
+        if ($request->input('action') === 'buy_now') {
+            return redirect()->route('cart.index')->with('success', "'{$product->product_name}' added. Proceeding to cart.");
         }
 
         return back()->with('success', "'{$product->product_name}' added to cart.");

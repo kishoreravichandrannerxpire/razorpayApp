@@ -8,7 +8,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::where('status', 'Active')->orderByDesc('id')->get();
 
         return view('products.index', compact('products'));
     }

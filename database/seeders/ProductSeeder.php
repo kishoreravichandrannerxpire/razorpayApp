@@ -22,7 +22,7 @@ class ProductSeeder extends Seeder
             ['id' => 6, 'product_name' => 'Printer', 'description' => 'HP Printer', 'price' => 9000, 'discount_percentage' => 5, 'stock' => 15, 'status' => 'Active'],
             ['id' => 7, 'product_name' => 'Pendrive', 'description' => '64GB USB', 'price' => 700, 'discount_percentage' => 0, 'stock' => 80, 'status' => 'Active'],
             ['id' => 8, 'product_name' => 'SSD', 'description' => '1TB SSD', 'price' => 6500, 'discount_percentage' => 18, 'stock' => 35, 'status' => 'Active'],
-            ['id' => 9, 'product_name' => 'Webcam', 'description' => 'HD Webcam', 'price' => 2800, 'discount_percentage' => 0, 'stock' => 25, 'status' => 'Inactive'],
+            ['id' => 9, 'product_name' => 'Webcam', 'description' => 'HD Webcam', 'price' => 2800, 'discount_percentage' => 10, 'stock' => 25, 'status' => 'Active'],
             ['id' => 10, 'product_name' => 'Router', 'description' => 'WiFi Router', 'price' => 2200, 'discount_percentage' => 10, 'stock' => 45, 'status' => 'Active'],
         ];
 
