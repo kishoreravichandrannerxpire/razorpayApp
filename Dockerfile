@@ -13,6 +13,8 @@ RUN a2enmod rewrite
 COPY . /var/www/html
 WORKDIR /var/www/html
 
+RUN sed -i 's/\r$//' start.sh && chmod +x start.sh
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN composer install --no-dev --optimize-autoloader
@@ -25,4 +27,4 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
 EXPOSE 80
 
-CMD php artisan migrate --force && php artisan db:seed --class=ProductSeeder --force && apache2-foreground
+CMD ["./start.sh"]

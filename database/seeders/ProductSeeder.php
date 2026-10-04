@@ -13,6 +13,13 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
+        // Products already irundha (soft-deleted kooda) seed pannaadhey.
+        // Illana every deploy-layum stock/price reset aagum,
+        // delete pannina product id-ku duplicate key error-um varum.
+        if (Product::withTrashed()->exists()) {
+            return;
+        }
+
         $products = [
             ['id' => 1, 'product_name' => 'Laptop', 'description' => 'Dell Inspiron', 'price' => 55000, 'discount_percentage' => 12, 'stock' => 20, 'status' => 'Active'],
             ['id' => 2, 'product_name' => 'Mouse', 'description' => 'Wireless Mouse', 'price' => 800, 'discount_percentage' => 15, 'stock' => 100, 'status' => 'Active'],
@@ -27,7 +34,7 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
-            Product::updateOrCreate(['id' => $product['id']], $product);
+            Product::create($product);
         }
 
         // Postgres la id manual ah kodutha, auto-increment sequence ah sync pannanum

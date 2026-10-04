@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
+    // Indha status-la irundha stock hold aagi irukkum
+    public const STOCK_HOLDING = ['Pending', 'Paid', 'Shipped'];
+
     protected $fillable = [
         'user_id',
         'order_number',
@@ -21,6 +25,7 @@ class Order extends Model
         'total_amount' => 'float',
         'discount_amount' => 'float',
     ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -48,24 +53,36 @@ class Order extends Model
         return $this->hasOne(Payment::class)->latestOfMany();
     }
 
-    public function markFailedAndRestoreStock(): void
-{
-    if (in_array($this->status, ['Failed', 'Cancelled'])) {
-        return; // already released, don't double-restore
+    public function markFailedAndRestoreStock(string $newStatus = 'Failed'): void
+    {
+        DB::transaction(function () use ($newStatus) {
+            // Fresh row + lock: webhook-um admin-um ore time-la vandhaalum rendu thadava stock thirumba varaadhu
+            $order = self::whereKey($this->id)->lockForUpdate()->first();
+
+            // Stock hold panna status illana (already Failed/Cancelled/Refunded) onnum pannaadhu
+            if (! $order || ! in_array($order->status, self::STOCK_HOLDING, true)) {
+                return;
+            }
+
+            foreach ($order->orderItems as $item) {
+                // withTrashed: admin delete pannina product-kum stock thirumba sera
+                Product::withTrashed()
+                    ->whereKey($item->product_id)
+                    ->lockForUpdate()
+                    ->increment('stock', $item->quantity);
+            }
+
+            // Order complete aagaadhu, so coupon use-a thirumba kudukkurom
+            if ($order->coupon_code) {
+                Coupon::where('code', $order->coupon_code)
+                    ->where('used_count', '>', 0)
+                    ->decrement('used_count');
+            }
+
+            $order->update(['status' => $newStatus]);
+        });
+
+        // In-memory model-um latest status-ku sync aaga
+        $this->refresh();
     }
-
-    \Illuminate\Support\Facades\DB::transaction(function () {
-        foreach ($this->orderItems as $item) {
-            Product::whereKey($item->product_id)->lockForUpdate()->increment('stock', $item->quantity);
-        }
-        // Give the coupon use back, since this order will not complete
-        if ($this->coupon_code) {
-            Coupon::where('code', $this->coupon_code)
-                ->where('used_count', '>', 0)
-                ->decrement('used_count');
-        }
-
-        $this->update(['status' => 'Failed']);
-    });
-}
 }

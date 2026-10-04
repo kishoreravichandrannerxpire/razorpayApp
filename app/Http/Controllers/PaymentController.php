@@ -8,6 +8,8 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Razorpay\Api\Errors\SignatureVerificationError;
 
 class PaymentController extends Controller
 {
@@ -129,48 +131,62 @@ class PaymentController extends Controller
     /**
      * Verify Razorpay payment signature and mark order as Paid.
      */
-    public function verifyPayment(Request $request)
-    {
-        $api = new Api(
-            config('services.razorpay.key'),
-            config('services.razorpay.secret')
-        );
+   public function verifyPayment(Request $request)
+{
+    if (! $request->filled(['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature'])) {
+        return redirect()->route('payment.failed');
+    }
 
+    // Ownership check: logged-in user-oda order mattum
+    $order = Order::where('razorpay_order_id', $request->razorpay_order_id)
+        ->where('user_id', auth()->id())
+        ->first();
+
+    if (! $order) {
+        return redirect()->route('payment.failed');
+    }
+
+    try {
+        $api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
         $api->utility->verifyPaymentSignature([
-            'razorpay_order_id' => $request->razorpay_order_id,
+            'razorpay_order_id'   => $request->razorpay_order_id,
             'razorpay_payment_id' => $request->razorpay_payment_id,
-            'razorpay_signature' => $request->razorpay_signature,
+            'razorpay_signature'  => $request->razorpay_signature,
         ]);
+    } catch (SignatureVerificationError $e) {
+        report($e);
+        return redirect()->route('payment.failed');
+    }
 
-        $order = Order::where(
-            'razorpay_order_id',
-            $request->razorpay_order_id
-        )->firstOrFail();
+    DB::transaction(function () use ($order, $request) {
+        $order = Order::whereKey($order->id)->lockForUpdate()->first();
 
         Payment::updateOrCreate(
+            ['razorpay_payment_id' => $request->razorpay_payment_id],
             [
-                'razorpay_payment_id' => $request->razorpay_payment_id,
-            ],
-            [
-                'order_id' => $order->id,
+                'order_id'          => $order->id,
                 'razorpay_order_id' => $request->razorpay_order_id,
-                'razorpay_signature' => $request->razorpay_signature,
-                'status' => 'Success',
-                'amount' => $order->total_amount,
-                'paid_at' => now(),
+                'razorpay_signature'=> $request->razorpay_signature,
+                'status'            => 'Success',
+                'amount'            => $order->total_amount,
+                'paid_at'           => now(),
             ]
         );
 
-        $order->update([
-            'status' => 'Paid'
-        ]);
+        if ($order->status === 'Pending') {
+            $order->update(['status' => 'Paid']);
+        } elseif (! in_array($order->status, ['Paid', 'Shipped', 'Refunded'], true)) {
+            report(new \RuntimeException(
+                "Payment {$request->razorpay_payment_id} received for {$order->order_number} but order is {$order->status}. Needs manual review or refund."
+            ));
+        }
+    });
 
-        // Clear cart after successful checkout
-        session()->forget('cart');
-        \App\Models\Cart::where('user_id', $order->user_id)->delete();
+    session()->forget('cart');
+    \App\Models\Cart::where('user_id', $order->user_id)->delete();
 
-        return redirect()->route('payment.success');
-    }
+    return redirect()->route('payment.success');
+}
 
     public function success()
     {
