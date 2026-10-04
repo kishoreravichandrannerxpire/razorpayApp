@@ -61,6 +61,7 @@ Route::middleware(['auth', 'redirect_if_admin'])->group(function () {
 
     // Products Catalog
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+        Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
     // Shopping Cart
     Route::get('/cart',                  [CartController::class, 'index'])->name('cart.index');

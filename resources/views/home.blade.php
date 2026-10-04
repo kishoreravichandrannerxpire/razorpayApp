@@ -109,7 +109,7 @@
 
     <div class="h-product-grid">
         @foreach($featuredProducts as $i => $product)
-        <div class="h-pcard {{ '' }}">
+        <a href="{{ route('products.show', $product->id) }}" class="h-pcard" style="text-decoration:none;">
             <div class="h-pcard-img-wrap">
                 <img
                     src="{{ $product->displayImage() }}"
@@ -117,53 +117,18 @@
                     class="h-pcard-img"
                     loading="lazy"
                 >
-                <div class="h-pcard-overlay">
-                    <form action="{{ route('cart.add') }}" method="POST" style="display:contents;">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <input type="hidden" name="quantity"   value="1">
-                        <button type="submit" name="action" value="buy_now" class="h-pcard-quick-buy"
-                                id="fp-buy-{{ $product->id }}">
-                            ⚡ Quick Buy
-                        </button>
-                    </form>
-                </div>
                 @if($product->hasDiscount())
-                    <div class="h-pcard-hot" style="background: linear-gradient(135deg, #dc2626, #ef4444);">
-                        🏷️ {{ $product->discount_percentage }}% OFF
-                    </div>
-                @elseif($product->stock > 0 && $product->stock < 5)
-                    <div class="h-pcard-hot">🔥 Hot</div>
+                    <span class="h-pcard-hot">🏷️ {{ $product->discount_percentage }}% OFF</span>
                 @endif
             </div>
             <div class="h-pcard-info">
                 <div class="h-pcard-meta">
                     <h3 class="h-pcard-name">{{ $product->product_name }}</h3>
-                    <div class="text-end">
-                        <span class="h-pcard-price">₹{{ number_format($product->finalPrice(), 2) }}</span>
-                        @if($product->hasDiscount())
-                            <small class="d-block text-muted text-decoration-line-through" style="font-size: 0.75rem;">
-                                ₹{{ number_format($product->price, 2) }}
-                            </small>
-                        @endif
-                    </div>
                 </div>
                 <p class="h-pcard-desc">{{ Str::limit($product->description ?? 'Premium quality tech.', 60) }}</p>
-                <form action="{{ route('cart.add') }}" method="POST" class="h-pcard-form">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <input type="hidden" name="quantity"   value="1">
-                    <button type="submit" name="action" value="add" class="h-pcard-btn-cart"
-                            id="fp-cart-{{ $product->id }}">
-                        🛒 Add to Cart
-                    </button>
-                    <button type="submit" name="action" value="buy_now" class="h-pcard-btn-buy"
-                            id="fp-buynow-{{ $product->id }}">
-                        Buy Now
-                    </button>
-                </form>
+                <span class="h-pcard-view-btn">View Product →</span>
             </div>
-        </div>
+        </a>
         @endforeach
     </div>
 
@@ -547,17 +512,21 @@
 .h-section-sub { color: #64748b; font-size: 1rem; margin: 0; }
 .h-section-footer { text-align: center; margin-top: 2.5rem; }
 
-/* ═══════ PRODUCT GRID ════════════════════════════ */
+/* ═══════ PRODUCT GRID — Horizontal Scroll Strip ══ */
 .h-product-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-direction: row;
     gap: 1.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: #3b82f6 rgba(255,255,255,0.05);
 }
-@media (max-width: 900px) { .h-product-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 600px) { .h-product-grid { grid-template-columns: 1fr; } }
-
-/* First card no longer spans 2 rows — all cards are equal */
-.h-pcard--featured { grid-row: span 1; }
+.h-product-grid::-webkit-scrollbar { height: 5px; }
+.h-product-grid::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 99px; }
+.h-product-grid::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 99px; }
 
 .h-pcard {
     background: var(--bg-card);
@@ -568,6 +537,9 @@
     transition: transform 0.28s cubic-bezier(.22,.68,0,1.4), box-shadow 0.28s ease;
     display: flex;
     flex-direction: column;
+    flex: 0 0 260px;        /* fixed width so cards sit side-by-side */
+    scroll-snap-align: start;
+    color: inherit;
 }
 .h-pcard:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 24px 56px rgba(0,0,0,0.4); }
 
@@ -627,6 +599,16 @@
 .h-pcard-name { font-size:1rem; font-weight:800; color:var(--text-main); margin:0; }
 .h-pcard-price { font-size:1.1rem; font-weight:900; color:#10b981; white-space:nowrap; }
 .h-pcard-desc { font-size:0.8rem; color:var(--text-sub); line-height:1.5; flex-grow:1; margin-bottom:0.9rem; }
+.h-pcard-view-btn {
+    display: inline-block;
+    margin-top: auto;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #60a5fa;
+    letter-spacing: 0.3px;
+    transition: color 0.2s, transform 0.2s;
+}
+.h-pcard:hover .h-pcard-view-btn { color: #93c5fd; transform: translateX(4px); }
 
 .h-pcard-form { display:flex; gap:0.5rem; }
 .h-pcard-btn-cart {
