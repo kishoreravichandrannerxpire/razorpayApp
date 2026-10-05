@@ -21,14 +21,6 @@
             <form action="{{ route('admin.login.submit') }}" method="POST">
                 @csrf
 
-                {{-- Top-level credential error --}}
-                @if($errors->has('email'))
-                    <div class="alert alert-danger py-2 px-3 small mb-3 d-flex align-items-center gap-2">
-                        <span>❌</span>
-                        <span>{{ $errors->first('email') }}</span>
-                    </div>
-                @endif
-
                 <!-- Email Input -->
                 <div class="mb-3">
                     <label for="admin_email" class="form-label fw-semibold">Admin Email <span class="text-danger">*</span></label>
@@ -58,7 +50,7 @@
                             class="form-control @error('password') is-invalid @enderror" 
                             id="admin_password" 
                             name="password" 
-                            placeholder="Enter your admin password" 
+                            placeholder="••••••••" 
                             required 
                             autocomplete="current-password"
                         >

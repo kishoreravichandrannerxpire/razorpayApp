@@ -44,9 +44,9 @@
                             </td>
                             <td>
                                 @if($coupon->type === 'percent')
-                                    <span class="badge bg-info-subtle text-info fw-bold">Percentage (%)</span>
+                                    <span class="badge bg-info text-white fw-bold">% Off</span>
                                 @else
-                                    <span class="badge bg-warning-subtle text-warning fw-bold">Fixed (₹)</span>
+                                    <span class="badge bg-warning text-dark fw-bold">Flat ₹</span>
                                 @endif
                             </td>
                             <td class="text-center fw-bold text-white">
@@ -59,7 +59,7 @@
                                 {{ $coupon->max_discount_amount ? '₹' . number_format($coupon->max_discount_amount, 2) : '—' }}
                             </td>
                             <td class="text-center">
-                                <span class="badge bg-secondary-subtle text-light">
+                                <span class="badge bg-secondary text-white fw-semibold" title="Used {{ $coupon->used_count }} of {{ $coupon->usage_limit ?? 'unlimited' }}">
                                     {{ $coupon->used_count }} / {{ $coupon->usage_limit ?? '∞' }}
                                 </span>
                             </td>
