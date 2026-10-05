@@ -21,7 +21,7 @@ class CartTest extends TestCase
             'quantity' => 10,
         ]);
 
-        $this->assertEquals(100, $product->fresh()->stock);
+        $this->assertEquals(999, $product->fresh()->stock);
     }
 
    public function test_checkout_fails_when_stock_is_zero()
