@@ -1,0 +1,42 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo_sqlite, sqlite3, zip, bcmath
+          coverage: none
+
+      - uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - run: composer install --prefer-dist --no-progress --no-interaction
+
+      - run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - run: php artisan test
+
+  deploy:
+    needs: tests
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Render deploy trigger
+        run: curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
