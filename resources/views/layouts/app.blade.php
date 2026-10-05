@@ -293,6 +293,10 @@
             border-color: var(--border-focus) !important;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
         }
+        .form-control::placeholder, .form-select::placeholder {
+            color: #64748b !important;
+            opacity: 1;
+        }
         .form-label {
             font-weight: 600;
             font-size: 0.85rem;
@@ -446,6 +450,12 @@
         @if(session('error'))
             <div class="alert alert-danger mb-4" role="alert">
                 <strong>✕</strong> {{ session('error') }}
+            </div>
+        @endif
+
+        @if(session('warning'))
+            <div class="alert mb-4" role="alert" style="background: rgba(245, 158, 11, 0.15) !important; color: #fcd34d !important; border-left: 4px solid #f59e0b !important;">
+                <strong>⚠️</strong> {{ session('warning') }}
             </div>
         @endif
 
