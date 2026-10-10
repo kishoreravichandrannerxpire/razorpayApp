@@ -37,21 +37,21 @@ Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
 
 // Admin Authentication Routes
 Route::get('/admin/login',  [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
-Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.submit');
+Route::post('/admin/login', [AuthController::class, 'adminLogin'])->middleware('throttle:5,30')->name('admin.login.submit');
 
 // Customer Password Reset & OTP Routes
 Route::get('/forgot-password',  [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
 Route::post('/forgot-password', [AuthController::class, 'sendOtp'])->middleware('throttle:5,30')->name('password.email');
 Route::get('/reset-password',   [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
-Route::post('/reset-password',  [AuthController::class, 'resetPassword'])->name('password.update');
+Route::post('/reset-password',  [AuthController::class, 'resetPassword'])->middleware('throttle:5,15')->name('password.update');
 Route::post('/resend-otp',      [AuthController::class, 'resendOtp'])->middleware('throttle:5,30')->name('password.resend');
 
 // Admin Password Reset & OTP Routes
 Route::get('/admin/forgot-password',  [AuthController::class, 'showAdminForgotPasswordForm'])->name('admin.password.request');
-Route::post('/admin/forgot-password', [AuthController::class, 'sendAdminOtp'])->name('admin.password.email');
+Route::post('/admin/forgot-password', [AuthController::class, 'sendAdminOtp'])->middleware('throttle:5,30')->name('admin.password.email');
 Route::get('/admin/reset-password',   [AuthController::class, 'showAdminResetPasswordForm'])->name('admin.password.reset');
-Route::post('/admin/reset-password',  [AuthController::class, 'resetAdminPassword'])->name('admin.password.update');
-Route::post('/admin/resend-otp',      [AuthController::class, 'resendAdminOtp'])->name('admin.password.resend');
+Route::post('/admin/reset-password',  [AuthController::class, 'resetAdminPassword'])->middleware('throttle:5,15')->name('admin.password.update');
+Route::post('/admin/resend-otp',      [AuthController::class, 'resendAdminOtp'])->middleware('throttle:5,30')->name('admin.password.resend');
 
 // ── Authenticated Customer Routes (requires login + not admin) ───────────
 Route::middleware(['auth', 'redirect_if_admin'])->group(function () {

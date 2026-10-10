@@ -269,7 +269,7 @@ class AuthController extends Controller
             ->withErrors(['email' => 'No account found with this email address.']);
     }
 
-    $otp = sprintf("%06d", mt_rand(100000, 999999));
+    $otp = (string) random_int(100000, 999999);
 
     DB::table('password_reset_tokens')->updateOrInsert(
         ['email' => $user->email],
@@ -366,7 +366,7 @@ class AuthController extends Controller
         return back()->withErrors(['email' => 'User not found.']);
     }
 
-    $otp = sprintf("%06d", mt_rand(100000, 999999));
+    $otp = (string) random_int(100000, 999999);
 
     DB::table('password_reset_tokens')->updateOrInsert(
         ['email' => $user->email],
@@ -408,7 +408,7 @@ class AuthController extends Controller
             ->withErrors(['email' => 'No administrator account found with this email address.']);
     }
 
-    $otp = sprintf("%06d", mt_rand(100000, 999999));
+    $otp = (string) random_int(100000, 999999);
 
     DB::table('password_reset_tokens')->updateOrInsert(
         ['email' => $user->email],
@@ -495,7 +495,7 @@ class AuthController extends Controller
         return back()->withErrors(['email' => 'Administrator account not found.']);
     }
 
-    $otp = sprintf("%06d", mt_rand(100000, 999999));
+    $otp = (string) random_int(100000, 999999);
 
     DB::table('password_reset_tokens')->updateOrInsert(
         ['email' => $user->email],
